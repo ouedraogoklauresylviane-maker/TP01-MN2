@@ -1,0 +1,26 @@
+// TP1 MN2 -- application etudiante. Noms des trois membres : nom 1, nom 2, nom 3
+// Placer ce fichier et TP_01_Outils_Quadrature.sce dans le meme dossier.
+clear;
+exec("TP_01_Outils_Quadrature.sce", -1);
+
+// Cas continu : modele normalise d'une puissance variable.
+function y = modele(x)
+    y = exp(x);
+endfunction
+Iref = %e-1; // Integrale exacte sur [0,1].
+ns = [4 8 16 32];
+ET = zeros(1, length(ns)); ES = ET;
+errT = ET; errS = ET;
+for k = 1:length(ns)
+    n = ns(k);
+    [t, y] = echantillonner(modele, 0, 1, n);
+    // TODO 1 : utiliser les deux quadratures du CM1.
+    ET(k) = trapezes(t, y);
+    ES(k) = simpson(t, y);
+    // TODO 2 : erreurs absolues par rapport a Iref.
+    errT(k) = abs(ET(k) - Iref);
+    errS(k) = abs(ES(k) - Iref);
+    mprintf("n=%d T=%.9f S=%.9f ET=%.3e ES=%.3e\n", ..
+            n, ET(k), ES(k), errT(k), errS(k));
+end
+for k = 1:length(ns)-1
